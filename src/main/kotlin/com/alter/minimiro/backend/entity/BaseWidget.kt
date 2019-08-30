@@ -2,4 +2,4 @@ package com.alter.minimiro.backend.entity
 
 import java.time.LocalDate
 
-class BaseWidget(val id: Int, val date: LocalDate, val mapX: Int, val mapY: Int, val height: Int, val width: Int, val level: Int)
+class BaseWidget(val id: String, var date: LocalDate, var mapX: Int, var mapY: Int, var height: Int, var width: Int, var level: Int)

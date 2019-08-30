@@ -5,6 +5,6 @@ import com.alter.minimiro.backend.entity.BaseWidget
 
 object DataBase {
 
-    val widgetList = arrayListOf<BaseWidget>()
+    val widgetList = hashMapOf<String, BaseWidget>()
 
 }
