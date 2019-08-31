@@ -1,11 +1,12 @@
 package com.alter.minimiro.backend
 
 import com.alter.minimiro.backend.entity.BaseWidget
+import java.util.*
 
 object WidgetDataSet {
-    private val storage = hashMapOf<String, BaseWidget>()
+    private val storage = Collections.synchronizedMap(hashMapOf<String, BaseWidget>())
 
-    fun getAll() = storage
+    fun getAll(): MutableMap<String, BaseWidget> = storage
 
     fun remove(id: String) = storage.remove(id)
 
@@ -16,7 +17,7 @@ object WidgetDataSet {
         storage[key] = value
     }
 
-    fun shiftLevel(level: Int) {
+    private fun shiftLevel(level: Int) {
         val flat = storage.map { it.value }
         val ids = arrayListOf<String>()
         var currentLevel = level

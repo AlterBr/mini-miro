@@ -21,7 +21,7 @@ import javax.ws.rs.core.MediaType
 class CustomJsonProvider : JacksonJsonProvider() {
 
     companion object {
-        private val dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy hh:mm:ss")
+        private val dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")
         private val mapper: ObjectMapper = ObjectMapper()
                 .registerModule(ParameterNamesModule())
                 .registerModule(JavaTimeModule()

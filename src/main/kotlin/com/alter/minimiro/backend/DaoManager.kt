@@ -3,6 +3,7 @@ package com.alter.minimiro.backend
 import com.alter.minimiro.backend.entity.BaseWidget
 import java.time.LocalDateTime
 import java.util.*
+import java.util.concurrent.locks.ReentrantLock
 
 object DaoManager {
     fun create(mapX: Int?, mapY: Int?, height: Int?, width: Int?, level: Int?) : BaseWidget {
@@ -30,15 +31,16 @@ object DaoManager {
 
     fun update(id: String, mapX: Int?, mapY: Int?, height: Int?, width: Int?, level: Int?) : Boolean {
         val currentWidget = WidgetDataSet[id] ?: return false
-        currentWidget.date = LocalDateTime.now()
-        mapX?.let { currentWidget.mapX = it }
-        mapY?.let { currentWidget.mapY = it }
-        height?.let { currentWidget.height = it }
-        width?.let { currentWidget.width = it }
-        level?.let {
-            WidgetDataSet.shiftLevel(it)
-            currentWidget.level = it
-        }
+        val widget = BaseWidget(
+                id = id,
+                date = LocalDateTime.now(),
+                mapX = mapX ?: currentWidget.mapX,
+                mapY = mapY ?: currentWidget.mapX,
+                height = height ?: currentWidget.mapX,
+                width = width ?: currentWidget.mapX,
+                level = level ?: currentWidget.level
+        )
+        WidgetDataSet[id] = widget
         return true
     }
 }
