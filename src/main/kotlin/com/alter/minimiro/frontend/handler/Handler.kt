@@ -1,9 +1,7 @@
 package com.alter.minimiro.frontend.handler
 
-import com.alter.minimiro.backend.DataBase
-import com.alter.minimiro.backend.entity.BaseWidget
-import java.time.LocalDate
-import java.util.*
+import com.alter.minimiro.backend.DaoManager
+import org.slf4j.LoggerFactory
 import javax.annotation.ManagedBean
 import javax.inject.Singleton
 import javax.ws.rs.POST
@@ -17,49 +15,88 @@ import javax.ws.rs.core.Response
 @Path("widget")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 class Handler {
+    private val logger = LoggerFactory.getLogger("com.alter.minimiro.frontend.handler.Handler")
 
     @POST
     @Path("create")
     fun createWidget(req: CreateRequest) : Response {
-        val id = UUID.randomUUID().toString()
-        val widget = BaseWidget(id, req.date, req.mapX, req.mapY, req.height, req.width, req.level)
-        val db = DataBase.widgetList
-        db[id] = widget
+        logger.info("widget/create :: request :: $req")
+        val widget = try {
+             DaoManager.create(req.mapX, req.mapY, req.height, req.width, req.level)
+        }
+        catch (ex: Exception) {
+            logger.error("", ex)
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build()
+        }
+        logger.info("widget/create :: response :: $widget")
         return Response.ok(widget).build()
     }
 
     @POST
     @Path("get-all")
     fun getAllWidget() : Response {
-        val result = arrayListOf<BaseWidget>()
-        result.addAll(DataBase.widgetList.map { it.value }.sortedBy { it.level })
-        return Response.ok(result).build()
+        logger.info("widget/get-all :: request")
+        val widgetList = try {
+            DaoManager.getAll()
+        }
+        catch (ex: Exception) {
+            logger.error("", ex)
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build()
+        }
+        logger.info("widget/get-all :: response :: $widgetList")
+        return Response.ok(widgetList).build()
     }
 
     @POST
     @Path("get-one")
-    fun getWidgetById(req: ActionByIdRequest) : Response {
-        val widget = DataBase.widgetList[req.id]
+    fun getWidgetById(req: GetOneRequest) : Response {
+        logger.info("widget/get-one :: request :: $req")
+        val widget = try {
+            DaoManager.getOne(req.id)
+        }
+        catch (ex: Exception) {
+            logger.error("", ex)
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build()
+        }
+        logger.info("widget/get-one :: response :: ${widget ?: "Виджет с таким id не найден"}")
         return Response.ok(widget).build()
     }
 
     @POST
     @Path("delete")
-    fun deleteWidget(req: ActionByIdRequest) : Response {
-        DataBase.widgetList.remove(req.id)
+    fun deleteWidget(req: DeleteRequest) : Response {
+        logger.info("widget/delete :: request :: $req")
+        try {
+            val result = DaoManager.delete(req.id)
+            if (!result) {
+                logger.info("widget/delete :: response :: Виджет с таким id не найден")
+                return Response.ok("Виджет с таким id не найден").build()
+            }
+        }
+        catch (ex: Exception) {
+            logger.error("", ex)
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build()
+        }
+        logger.info("widget/delete :: response :: ok")
         return Response.ok().build()
     }
 
     @POST
     @Path("update")
     fun updateWidget(req: UpdateRequest) : Response {
-        val currentWidget = DataBase.widgetList[req.id] ?: return Response.ok("Такой виджет не найден").build()
-        currentWidget.date = LocalDate.now()
-        req.mapX?.let { currentWidget.mapX = it }
-        req.mapY?.let { currentWidget.mapY = it }
-        req.height?.let { currentWidget.height = it }
-        req.width?.let { currentWidget.width = it }
-        req.level?.let { currentWidget.level = it }
+        logger.info("widget/update :: request :: $req")
+        try {
+            val result = DaoManager.update(req.id, req.mapX, req.mapY, req.height, req.width, req.level)
+            if (!result) {
+                logger.info("widget/update :: response :: Виджет с таким id не найден")
+                return Response.ok("Виджет с таким id не найден").build()
+            }
+        }
+        catch (ex: Exception) {
+            logger.error("", ex)
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build()
+        }
+        logger.info("widget/update :: response :: ok")
         return Response.ok().build()
     }
 

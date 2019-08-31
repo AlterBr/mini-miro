@@ -1,5 +1,5 @@
 package com.alter.minimiro.backend.entity
 
-import java.time.LocalDate
+import java.time.LocalDateTime
 
-class BaseWidget(val id: String, var date: LocalDate, var mapX: Int, var mapY: Int, var height: Int, var width: Int, var level: Int)
+data class BaseWidget(val id: String, var date: LocalDateTime, var mapX: Int, var mapY: Int, var height: Int, var width: Int, var level: Int)
