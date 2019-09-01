@@ -35,9 +35,9 @@ object DaoManager {
                 id = id,
                 date = LocalDateTime.now(),
                 mapX = mapX ?: currentWidget.mapX,
-                mapY = mapY ?: currentWidget.mapX,
-                height = height ?: currentWidget.mapX,
-                width = width ?: currentWidget.mapX,
+                mapY = mapY ?: currentWidget.mapY,
+                height = height ?: currentWidget.height,
+                width = width ?: currentWidget.width,
                 level = level ?: currentWidget.level
         )
         WidgetDataSet[id] = widget
