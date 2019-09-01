@@ -15,7 +15,7 @@ internal class DaoManagerTest {
 
     @AfterEach
     fun afterEach() {
-        DaoManager.getAll().map { it.id }.forEach { DaoManager.delete(it) }
+        WidgetDataSet.clear()
         firstId = ""
     }
 
@@ -96,6 +96,36 @@ internal class DaoManagerTest {
                 0,
                 DaoManager.getOne(widget3.id)!!.level
         )
+    }
+
+    @Test
+    fun checkLimit() {
+        for (i in 1..700) { DaoManager.create(5, 5 ,5, 5, 0) }
+        assertEquals(
+                1,
+                DaoManager.getAll(-5).size
+        )
+        assertEquals(
+                1,
+                DaoManager.getAll(0).size
+        )
+        assertEquals(
+                5,
+                DaoManager.getAll(5).size
+        )
+        assertEquals(
+                10,
+                DaoManager.getAll().size
+        )
+        assertEquals(
+                70,
+                DaoManager.getAll(70).size
+        )
+        assertEquals(
+                500,
+                DaoManager.getAll(700).size
+        )
+
     }
 
 }

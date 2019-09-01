@@ -6,13 +6,15 @@ import java.util.*
 object WidgetDataSet {
     private val storage = Collections.synchronizedMap(hashMapOf<String, BaseWidget>())
 
-    fun getAll(): MutableMap<String, BaseWidget> = storage
+    internal fun getAll(): MutableMap<String, BaseWidget> = storage
 
-    fun remove(id: String) = storage.remove(id)
+    internal fun remove(id: String) = storage.remove(id)
 
-    operator fun get(id: String) = storage[id]
+    internal fun clear() = storage.clear()
 
-    operator fun set(key: String, value: BaseWidget) {
+    internal operator fun get(id: String) = storage[id]
+
+    internal operator fun set(key: String, value: BaseWidget) {
         shiftLevel(value.level)
         storage[key] = value
     }

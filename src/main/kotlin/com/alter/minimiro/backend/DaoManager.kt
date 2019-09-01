@@ -3,7 +3,6 @@ package com.alter.minimiro.backend
 import com.alter.minimiro.backend.entity.BaseWidget
 import java.time.LocalDateTime
 import java.util.*
-import java.util.concurrent.locks.ReentrantLock
 
 object DaoManager {
     fun create(mapX: Int?, mapY: Int?, height: Int?, width: Int?, level: Int?) : BaseWidget {
@@ -13,9 +12,15 @@ object DaoManager {
         return widget
     }
 
-    fun getAll() : List<BaseWidget> {
+    fun getAll(lim: Int? = null) : List<BaseWidget> {
         val result = arrayListOf<BaseWidget>()
-        result.addAll(WidgetDataSet.getAll().map { it.value }.sortedBy { it.level })
+        val limit = when {
+            lim == null -> 10
+            lim < 1 -> 1
+            lim > 500 -> 500
+            else -> lim
+        }
+        result.addAll(WidgetDataSet.getAll().map { it.value }.sortedBy { it.level }.take(limit))
         return result
     }
 

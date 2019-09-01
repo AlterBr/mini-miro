@@ -19,10 +19,16 @@ data class CreateRequest(
         val level: Int?
 )
 
+data class GetAllRequest(
+        @get:JsonProperty
+        val limit: Int?
+) { constructor() : this(null) }
+
 data class GetOneRequest(
         @get:JsonProperty
         val id: String
 ) { constructor() : this("") }
+
 data class DeleteRequest(
         @get:JsonProperty
         val id: String

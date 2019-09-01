@@ -34,10 +34,10 @@ class Handler {
 
     @POST
     @Path("get-all")
-    fun getAllWidget() : Response {
+    fun getAllWidget(req: GetAllRequest) : Response {
         logger.info("widget/get-all :: request")
         val widgetList = try {
-            DaoManager.getAll()
+            DaoManager.getAll(req.limit)
         }
         catch (ex: Exception) {
             logger.error("", ex)
