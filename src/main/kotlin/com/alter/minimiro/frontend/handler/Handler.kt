@@ -37,7 +37,7 @@ class Handler {
     fun getAllWidget(req: GetAllRequest) : Response {
         logger.info("widget/get-all :: request")
         val widgetList = try {
-            DaoManager.getAll(req.limit)
+            DaoManager.getAll(req.page, req.limit)
         }
         catch (ex: Exception) {
             logger.error("", ex)

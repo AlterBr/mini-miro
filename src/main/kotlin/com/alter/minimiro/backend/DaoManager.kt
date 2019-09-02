@@ -12,15 +12,28 @@ object DaoManager {
         return widget
     }
 
-    fun getAll(lim: Int? = null) : List<BaseWidget> {
+    fun getAll(pg: Int? = null, lim: Int? = null) : List<BaseWidget> {
         val result = arrayListOf<BaseWidget>()
+        val page = when {
+            pg == null -> 1
+            pg < 1 -> 1
+            else -> pg
+        }
         val limit = when {
             lim == null -> 10
             lim < 1 -> 1
             lim > 500 -> 500
             else -> lim
         }
-        result.addAll(WidgetDataSet.getAll().map { it.value }.sortedBy { it.level }.take(limit))
+        val startIndex = ((page - 1)  * limit)
+        val finIndex = startIndex + limit
+        val storage = WidgetDataSet.getAll()
+        val size = storage.size
+        when {
+            startIndex > size - 1 -> result.addAll(storage.map { it.value }.sortedBy { it.level }.takeLast(limit))
+            finIndex > size -> result.addAll(storage.map { it.value }.sortedBy { it.level }.subList(startIndex, size))
+            else -> result.addAll(storage.map { it.value }.sortedBy { it.level }.subList(startIndex, finIndex))
+        }
         return result
     }
 

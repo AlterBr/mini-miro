@@ -21,8 +21,10 @@ data class CreateRequest(
 
 data class GetAllRequest(
         @get:JsonProperty
+        val page: Int?,
+        @get:JsonProperty
         val limit: Int?
-) { constructor() : this(null) }
+) { constructor() : this(null, null) }
 
 data class GetOneRequest(
         @get:JsonProperty
